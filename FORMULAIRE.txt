@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Sign-Up Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://imgs.search.brave.com/25OfS91v-d87fL0kCzFUg5B5AWNZ9dMWZS-pgSnq8Ws/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJhY2Nlc3Mu/Y29tL2Z1bGwvMjU3/NjA5My5qcGc');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container, .notification-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            display: none;
+        }
+        .form-container.active, .notification-container.active {
+            display: block;
+        }
+        .form-container h2, .notification-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-container label, .notification-container p {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container button, .notification-container .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-container button:hover, .notification-container .btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container active" id="form-container">
+    <h2>Tournament Sign-Up Form</h2>
+    <form id="signup-form">
+        <label for="discordId">Discord ID:</label>
+        <input type="text" id="discordId" name="discordId" required>
+
+        <label for="riotGamesId">Riot Games ID:</label>
+        <input type="text" id="riotGamesId" name="riotGamesId" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="tournamentInfo">When did you hear about the tournament?</label>
+        <input type="text" id="tournamentInfo" name="tournamentInfo" required>
+
+        <label for="currentRank">Current Rank:</label>
+        <input type="text" id="currentRank" name="currentRank" required>
+
+        <label for="peakRank">Peak Rank:</label>
+        <input type="text" id="peakRank" name="peakRank" required>
+
+        <label for="teamName">Name of the Team:</label>
+        <input type="text" id="teamName" name="teamName" required>
+
+        <label for="teamMembers">Team Members:</label>
+        <textarea id="teamMembers" name="teamMembers" rows="4" required></textarea>
+
+        <button type="submit">Sign Up</button>
+    </form>
+</div>
+
+<div class="notification-container" id="notification-container">
+    <h2>Information Approved</h2>
+    <p>Your information has been approved. Please wait for another notification on your Discord with further instructions.</p>
+    <a href="#" class="btn">Return to Homepage</a>
+</div>
+
+<script>
+    const webhookURL = 'https://discord.com/api/webhooks/1253471119634337803/ZavIwGP8aH_C-d00gjDcSx6kZ-KGX7hoRu1Aafl51NJd7QOBYtdQLRIBoI3IrXWMtffU';
+
+    document.getElementById('signup-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const discordId = document.getElementById('discordId').value;
+        const riotGamesId = document.getElementById('riotGamesId').value;
+        const email = document.getElementById('email').value;
+        const tournamentInfo = document.getElementById('tournamentInfo').value;
+        const currentRank = document.getElementById('currentRank').value;
+        const peakRank = document.getElementById('peakRank').value;
+        const teamName = document.getElementById('teamName').value;
+        const teamMembers = document.getElementById('teamMembers').value;
+
+        const data = {
+            content: `New tournament sign-up:
+**Discord ID:** ${discordId}
+**Riot Games ID:** ${riotGamesId}
+**Email:** ${email}
+**Heard about tournament:** ${tournamentInfo}
+**Current Rank:** ${currentRank}
+**Peak Rank:** ${peakRank}
+**Team Name:** ${teamName}
+**Team Members:** ${teamMembers}`
+        };
+
+        fetch(webhookURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            if (response.ok) {
+                document.getElementById('form-container').classList.remove('active');
+                document.getElementById('notification-container').classList.add('active');
+            } else {
+                alert('Failed to send the data to Discord. Please try again.');
+            }
+        }).catch(error => {
+            alert('An error occurred while sending the data to Discord. Please try again.');
+        });
+    });
+</script>
+
+</body>
+</html>
